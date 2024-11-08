@@ -380,47 +380,42 @@ print(valence_acousticness_corr)
 
 ## Platform Popularity
 
-#### 1. How do the numbers of tracks in spotify_playlists, spotify_charts, and apple_playlists compare? Which platform seems to favor the most popular tracks?
+#### 1. How do the numbers of tracks in spotify_playlists, deezer_playlist , and apple_playlists compare? Which platform seems to favor the most popular tracks?
 
-![image](https://github.com/user-attachments/assets/6e874e93-f5f4-4a18-9b50-2caddd349ea2)
+![image](https://github.com/user-attachments/assets/fa3e93b6-f30d-4b3d-b12c-d922a4a98aad)
+![image](https://github.com/user-attachments/assets/232e926f-215d-40ee-b980-72a9c6730490)
 
 
 
-- The dataset has quite some differences in track counts: the Spotify Playlists is a leader with 4,955,719 tracks and offer a huge amount of music. The Spotify Charts have 11,445 tracks targeting popular, trending songs; Apple Playlists feature 64,625 tracks that are curated, though less diverse, offering than the vast library of Spotify. The former offers playlists for a diverse taste, while the latter features the most recent hits.
+
+
+
+- The bar chart compares the total number of tracks in Spotify Playlists (4,955,719), Deezer Playlists (95,913), and Apple Playlists (64,625). According to the green bar, which reaches nearly 5 million, Spotify has the most tracks. Above each bar are values to make it clearer. Thus, Spotify Playlists is the platform with the highest track count, meaning that it is the most popular. Table Based on top five tracks findings, here one can see that there's a preference of more popular tracks in Spotify Playlists.
 
 ##### CODE 
 ```
-# Count the number of tracks in each playlist category
-spotify_playlists_count = data['in_spotify_playlists'].sum()  # Total tracks in Spotify playlists
-spotify_charts_count = data['in_spotify_charts'].sum()  # Total tracks in Spotify charts
-apple_playlists_count = data['in_apple_playlists'].sum()  # Total tracks in Apple playlists
+# Calculate the total number of tracks in each playlist category
+numtrack_playlists = data[['in_spotify_playlists', 'in_deezer_playlists', 'in_apple_playlists']].apply(pd.to_numeric, errors='coerce').sum()
+print("Number of tracks in the categories:")
+print(numtrack_playlists)
 
-# Create lists for platforms and their corresponding counts
-platforms = ['Spotify Playlists', 'Spotify Charts', 'Apple Playlists']  # Platform names
-counts = [spotify_playlists_count, spotify_charts_count, apple_playlists_count]  # Track counts
+# Updated colors for the bar chart
+color2 = ["#1DB954", "#FF4B3E", "#007AFF"]  # New color scheme
 
-# Create a simple bar chart
-plt.figure(figsize=(8, 5))  # Set figure size
-plt.bar(platforms, counts, color=['blue', 'orange', 'green'])  # Bar chart with specified colors
+# Plot the bar chart
+plt.figure(figsize=(8, 5))
+sns.barplot(x=numtrack_playlists.index, y=numtrack_playlists.values, palette=color2, dodge=False)
+plt.title("Number of Tracks in Each Category")
+plt.xlabel("Category")
+plt.yscale('log')  # Log scale for better visibility of differences
+plt.ylabel("Number of Tracks")
+plt.show()
 
-# Adding titles and labels
-plt.title('Number of Tracks in Different Playlists')  # Chart title
-plt.xlabel('Platform')  # X-axis label
-plt.ylabel('Number of Tracks')  # Y-axis label
+# Display the top 5 tracks with their counts in the playlists
+top_tracks = data.loc[[55, 179, 86, 620, 41], ['track_name', 'artist(s)_name', 'in_spotify_playlists', 'in_deezer_playlists', 'in_apple_playlists']]
+print("Top 5 tracks with their respective counts in the playlists:")
+print(top_tracks)
 
-# Display the value on top of each bar
-for i in range(len(counts)):  # Iterate through counts
-    plt.text(i, counts[i], counts[i], ha='center', va='bottom')  # Display count above the bar
-
-# Show the plot
-plt.show()  # Render the plot
-
-# Determine which platform has the most tracks
-most_favored_platform = platforms[counts.index(max(counts))]  # Get platform with the highest track count
-most_favored_count = max(counts)  # Get the count of tracks for that platform
-
-# Print the result
-print(f"The platform that favors the most popular tracks is {most_favored_platform} with {most_favored_count} tracks.")  # Output the result
 
 
 ````
